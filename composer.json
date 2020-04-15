@@ -1,0 +1,35 @@
+{
+    "name": "andriymiz/iiko-biz-api",
+    "description": "A wrapper for iiko biz API",
+    "keywords": ["iiko", "iiko-biz", "php"],
+    "homepage": "http://gitlab.oho.sytes.net/andriymiz/iiko-biz-api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miz Andriy",
+            "email": "andriy.miz.v@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.3.0",
+        "guzzlehttp/guzzle": "^6.5",
+        "illuminate/support": "~5.8.0|^6.0|^7.0"
+    },
+    "autoload": {
+        "classmap": [
+        ],
+        "psr-0": {
+            "Iiko\\Biz": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Iiko\\Biz\\IikoBizServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
