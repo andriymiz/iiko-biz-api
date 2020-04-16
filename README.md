@@ -20,6 +20,19 @@ Via Composer:
 $ composer require andriymiz/iiko-biz-api
 ```
 
+In Laravel:
+
+Publish config file
+```bash
+$ php artisan vendor:publish --provider="Iiko\Biz\IikoBizServiceProvider"
+```
+
+Or in .env file
+```env
+IIKO_BIZ_USER_ID=demoDelivery
+IIKO_BIZ_USER_SECRET=PI1yFaKFCGvvJKi
+```
+
 ## Basic usage of `iiko-biz-api` client
 
 ```php
@@ -31,6 +44,9 @@ $iiko = new IikoClient([
     'user_id' => 'demoDelivery',
     'user_secret' => 'PI1yFaKFCGvvJKi',
 ]);
+
+// In Laravel
+$iiko = app('iiko');
 
 $organization = $iiko->OrganizationsApi()->getList()[0];
 
@@ -45,6 +61,7 @@ $order = $iiko->OrdersApi()->addOrder([
     'organization' => $organization['id'],
     'customer' => ['name' => 'test', 'phone' => 'Phone'],
     'order' => ['phone' => 'Phone'],
+    'items' => ['id' => 'uuid', 'amount' => 1],
 ]);
 $deliveryOrders = $iiko->OrdersApi()->getDeliveryOrders($organization['id'], [
     'dateFrom' => '2020-04-09',
