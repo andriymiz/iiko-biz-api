@@ -10,7 +10,7 @@ Uses [iiko API v0](https://ru.iiko.help/articles/#!api-documentations/iiko-biz).
 
 ## Requirements
 
-* PHP >= 7.3
+* PHP >= 7.2
 
 ## Install
 
