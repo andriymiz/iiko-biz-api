@@ -45,7 +45,10 @@ abstract class AbstractApi
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
-                throw new IikoResponseException('(' . ($response['code'] ?? 0) . ') ' . $response['message'], $response['httpStatusCode']);
+                throw new IikoResponseException(
+                    $response['message'] ?? 'Unknown',
+                    ($response['code'] ?? 0) ?: ($response['httpStatusCode'] ?? 0)
+                );
             }
         }
         return $this->decodeResponse($response);
@@ -67,7 +70,10 @@ abstract class AbstractApi
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
-                throw new IikoResponseException('(' . ($response['code'] ?? 0) . ') ' . $response['message'], $response['httpStatusCode']);
+                throw new IikoResponseException(
+                    $response['message'] ?? 'Unknown',
+                    ($response['code'] ?? 0) ?: ($response['httpStatusCode'] ?? 0)
+                );
             }
         }
 
