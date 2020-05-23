@@ -42,7 +42,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
  */
 class Client
 {
-    const API_BASE_URI = 'https://iiko.biz:9900/api/0/';
+    const DEFAULT_API_BASE_URI = 'https://iiko.biz:9900/api/0/';
 
     /**
      * @var GuzzleHttpClient $client
@@ -69,7 +69,7 @@ class Client
     {
         $this->options = $options;
         $this->httpClient = new GuzzleHttpClient([
-            'base_uri' => self::API_BASE_URI,
+            'base_uri' => $options['api_base_uri'] ?? self::DEFAULT_API_BASE_URI,
         ]);
     }
 

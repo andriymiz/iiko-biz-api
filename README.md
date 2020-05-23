@@ -29,6 +29,7 @@ $ php artisan vendor:publish --provider="Iiko\Biz\IikoBizServiceProvider"
 
 Or in .env file
 ```env
+IIKO_BIZ_API_BASE_URI=https://iiko.biz:9900/api/0/
 IIKO_BIZ_USER_ID=demoDelivery
 IIKO_BIZ_USER_SECRET=PI1yFaKFCGvvJKi
 ```
