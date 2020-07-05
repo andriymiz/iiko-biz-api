@@ -46,7 +46,7 @@ abstract class AbstractApi
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
                 throw new IikoResponseException(
-                    $response['message'] ?? 'Unknown',
+                    $response['message'] ?? $response['Message'] ?? 'Unknown',
                     ($response['code'] ?? 0) ?: ($response['httpStatusCode'] ?? 0)
                 );
             }
@@ -71,7 +71,7 @@ abstract class AbstractApi
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
                 throw new IikoResponseException(
-                    $response['message'] ?? 'Unknown',
+                    $response['message'] ?? $response['Message'] ?? 'Unknown',
                     ($response['code'] ?? 0) ?: ($response['httpStatusCode'] ?? 0)
                 );
             }
