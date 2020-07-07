@@ -144,7 +144,7 @@ class Orders extends AbstractApi
     {
         return $this->post('orders/assigncourier', $request, $this->withToken($params + [
             'organization' => $organizationId,
-        ]));
+        ])) ?? [];
     }
 
     /**
