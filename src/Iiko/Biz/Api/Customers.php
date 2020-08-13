@@ -74,7 +74,7 @@ class Customers extends AbstractApi
      */
     public function addCategory(string $organizationId, string $customerId, string $categoryId, array $params = [])
     {
-        return $this->post("customers/{$customerId}/create_or_update", [], $this->withToken($params + [
+        return $this->post("customers/{$customerId}/add_category", [], $this->withToken($params + [
             'organization' => $organizationId,
             'categoryId' => $categoryId,
         ]));
