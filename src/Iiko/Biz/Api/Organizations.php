@@ -117,4 +117,16 @@ class Organizations extends AbstractApi
     {
         return $this->post("organization/{$organizationId}/send_email", $sendEmailRequest, $this->withToken($params));
     }
+
+    /**
+     * @param  string $organizationId
+     * @param  array $params
+     * @return array
+     */
+    public function getPrograms(string $organizationId, array $params = [])
+    {
+        return $this->get('organization/programs', $this->withToken($params + [
+            'organization' => $organizationId,
+        ]));
+    }
 }
