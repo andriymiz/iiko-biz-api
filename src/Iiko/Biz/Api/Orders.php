@@ -117,7 +117,7 @@ class Orders extends AbstractApi
      */
     public function sendDeliveryOpinion(array $opinion, array $params = []): array
     {
-        return $this->post('orders/sendDeliveryOpinion', $opinion, $this->withToken($params));
+        return $this->post('orders/sendDeliveryOpinion', $opinion, $this->withToken($params)) ?? [];
     }
 
     /**
@@ -157,7 +157,7 @@ class Orders extends AbstractApi
     {
         return $this->post('orders/set_order_delivered', $request, $this->withToken($params + [
             'organization' => $organizationId,
-        ]));
+        ])) ?? [];
     }
 
     /**
@@ -170,7 +170,7 @@ class Orders extends AbstractApi
     {
         return $this->post('orders/add_order_problem', $request, $this->withToken($params + [
             'organization' => $organizationId,
-        ]));
+        ])) ?? [];
     }
 
     /**
@@ -225,6 +225,6 @@ class Orders extends AbstractApi
     {
         return $this->post('orders/check_and_get_combo_price', $comboPriceRequest, $this->withToken($params + [
             'organization' => $organizationId,
-        ]));
+        ])) ?? [];
     }
 }
