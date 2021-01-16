@@ -2,7 +2,7 @@
     "name": "andriymiz/iiko-biz-api",
     "description": "A wrapper for iiko biz API",
     "keywords": ["iiko", "iiko-biz", "php"],
-    "homepage": "http://gitlab.oho.sytes.net/andriymiz/iiko-biz-api",
+    "homepage": "https://github.com/andriymiz/iiko-biz-api",
     "license": "MIT",
     "authors": [
         {
@@ -14,7 +14,7 @@
     "require": {
         "php": ">=7.2.0",
         "guzzlehttp/guzzle": "^6.5",
-        "illuminate/support": "~5.8.0|^6.0|^7.0"
+        "illuminate/support": "~5.8.0|^6.0|^7.0|^8.0"
     },
     "autoload": {
         "classmap": [
