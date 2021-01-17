@@ -15,6 +15,14 @@ use Iiko\Biz\Api\Orders;
 use Iiko\Biz\Api\Olaps;
 use Iiko\Biz\Api\Auth;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use Iiko\Biz\Factories\LoggerFactory;
 
 /**
  * The iiko API Client
@@ -59,6 +67,9 @@ class Client
      */
     private $token;
 
+    protected $logger;
+    const MAX_RETRIES = 1;
+
     /**
      * Construct the iiko Client
      *
@@ -68,9 +79,101 @@ class Client
     public function __construct(array $options = [])
     {
         $this->options = $options;
+        if (isset($options['logging']) && is_string($options['logging'])) {
+            $this->logger = (new LoggerFactory)->create('log', $options['logging']);
+        }
+
         $this->httpClient = new GuzzleHttpClient([
             'base_uri' => $options['api_base_uri'] ?? self::DEFAULT_API_BASE_URI,
+            'handler' => $this->logger ? $this->createHandlerStack() : null,
         ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function createHandlerStack()
+    {
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::retry($this->retryDecider(), $this->retryDelay()));
+        return $this->createLoggingHandlerStack($stack);
+    }
+
+    /**
+     * @param HandlerStack $stack
+     * @return mixed
+     */
+    protected function createLoggingHandlerStack(HandlerStack $stack)
+    {
+        $messageFormats = [
+            '{method} {uri} HTTP/{version}',
+            'HEADERS: {req_headers}',
+            'BODY: {req_body}',
+            'RESPONSE: {code} - {res_body}',
+        ];
+        foreach ($messageFormats as $messageFormat) {
+            // We'll use unshift instead of push, to add the middleware to the bottom of the stack, not the top
+            $stack->unshift(
+                $this->createGuzzleLoggingMiddleware($messageFormat)
+            );
+        }
+
+        return $stack;
+    }
+
+    /**
+     * @param string $messageFormat
+     * @return mixed
+     */
+    protected function createGuzzleLoggingMiddleware(string $messageFormat)
+    {
+        return Middleware::log(
+            $this->logger,
+            new MessageFormatter($messageFormat)
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function retryDecider()
+    {
+        return function (
+            $retries,
+            Request $request,
+            Response $response = null,
+            RequestException $exception = null
+        ) {
+            // Limit the number of retries to MAX_RETRIES
+            if ($retries >= self::MAX_RETRIES) {
+                return false;
+            }
+            // Retry connection exceptions
+            if ($exception instanceof ConnectException) {
+                $this->logger->info('Timeout encountered, retrying');
+                return true;
+            }
+            if ($response) {
+                // Retry on server errors
+                if ($response->getStatusCode() >= 500) {
+                    $this->logger->info('Server 5xx error encountered, retrying...');
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
+    /**
+     * delay 1s 2s 3s 4s 5s ...
+     *
+     * @return mixed
+     */
+    protected function retryDelay()
+    {
+        return function ($numberOfRetries) {
+            return 1000 * $numberOfRetries;
+        };
     }
 
     /**

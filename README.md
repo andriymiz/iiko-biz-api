@@ -46,7 +46,9 @@ $iiko = new IikoClient([
     'user_secret' => 'PI1yFaKFCGvvJKi',
 ]);
 
-// In Laravel
+// Logging in Laravel. Must be set before first call app('iiko');
+config(['iiko-biz.logging' => storage_path('logs/iiko.log')]);
+// In Laravel;
 $iiko = app('iiko');
 
 $organization = $iiko->OrganizationsApi()->getList()[0];

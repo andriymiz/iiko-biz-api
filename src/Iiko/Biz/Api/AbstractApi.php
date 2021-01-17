@@ -41,7 +41,7 @@ abstract class AbstractApi
     public function get($path, array $params = [], $headers = [])
     {
         try {
-            $response = $this->getClient()->getHttpClient()->request('GET', $path, ['query' => $params], $headers);
+            $response = $this->getClient()->getHttpClient()->request('GET', $path, ['query' => $params, 'headers' => $headers]);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
@@ -65,8 +65,12 @@ abstract class AbstractApi
      */
     public function post($path, $postBody = null, array $params = [], $headers = [])
     {
+        if (is_array($postBody)) {
+            $postBody = json_encode($postBody, JSON_UNESCAPED_UNICODE);
+        }
+        $headers['Content-Type'] = 'application/json';
         try {
-            $response = $this->getClient()->getHttpClient()->request('POST', $path, ['json' => $postBody, 'query' => $params], $headers);
+            $response = $this->getClient()->getHttpClient()->request('POST', $path, ['body' => $postBody, 'query' => $params, 'headers' => $headers]);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $this->decodeResponse($e->getResponse());
@@ -140,7 +144,7 @@ abstract class AbstractApi
     public function postJson($path, $postBody = null, array $params = [], $headers = [])
     {
         if (is_array($postBody)) {
-            $postBody = json_encode($postBody);
+            $postBody = json_encode($postBody, JSON_UNESCAPED_UNICODE);
         }
 
         return $this->post($path, $postBody, $params, $headers);
